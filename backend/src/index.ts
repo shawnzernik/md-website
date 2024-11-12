@@ -25,5 +25,7 @@ const app = new WebApp((logger: Logger, app: express.Express) => {
     new ListService(logger, app);
     new ListFilterService(logger, app);
     new SettingService(logger, app);
+
+    // add app routes here
 });
 app.execute();

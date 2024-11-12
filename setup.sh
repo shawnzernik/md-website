@@ -31,8 +31,8 @@ npm install || exit 1
 npm run build || exit 1
 npm run new || exit 1
 
-echo "----------------------------------------"
-echo "SETUP - running"
-echo "----------------------------------------"
-cd ../backend
-npm run run || exit 1
+# echo "----------------------------------------"
+# echo "SETUP - running"
+# echo "----------------------------------------"
+# cd ../backend
+# npm run run || exit 1
