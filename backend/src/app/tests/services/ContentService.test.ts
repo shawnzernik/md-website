@@ -51,8 +51,15 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.uri = "/sample/content";
-        entity.content = "This is a sample content.";
+        entity.pathAndName = "test/content/path";
+        entity.mimeType = "application/json";
+        entity.created = new Date();
+        entity.createdBy = "administrator@localhost";
+        entity.modified = new Date();
+        entity.modifiedBy = "administrator@localhost";
+        entity.viewUri = "http://localhost/view";
+        entity.editUri = "http://localhost/edit";
+        entity.content = "{}";
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -72,7 +79,7 @@ describe("ContentService", () => {
         expect(response.status).toBe(200);
 
         let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
-        expect(entity.uri).toEqual(reloaded.uri);
+        expect(entity.pathAndName).toEqual(reloaded.pathAndName);
     }, Config.jestTimeoutSeconds * 1000);
 
     test("POST /api/v0/content overwrite should return 200", async () => {
@@ -81,8 +88,15 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.uri = "/sample/content/updated";
-        entity.content = "This is an updated sample content.";
+        entity.pathAndName = "test/content/path/dup";
+        entity.mimeType = "application/json";
+        entity.created = new Date();
+        entity.createdBy = "administrator@localhost";
+        entity.modified = new Date();
+        entity.modifiedBy = "administrator@localhost";
+        entity.viewUri = "http://localhost/view";
+        entity.editUri = "http://localhost/edit";
+        entity.content = "{}";
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -102,7 +116,7 @@ describe("ContentService", () => {
         expect(response.status).toBe(200);
 
         let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
-        expect(entity.uri).toEqual(reloaded.uri);
+        expect(entity.pathAndName).toEqual(reloaded.pathAndName);
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/contents should return content list", async () => {

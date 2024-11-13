@@ -14,7 +14,7 @@ export class Config {
     public static httpsDefaultPage = Config.setString(process.env.HTTPS_DEFAULT_PAGE, "/static/tre/pages/login.html");
     public static httpsKeyPath = Config.setString(process.env.HTTPS_CERT_KEY, "./server.key");
     public static httpsLimit = Config.setString(process.env.HTTPS_LIMIT, "1024mb");
-    public static httpsPort = Config.setInt(process.env.HTTPS_PORT, "4433");
+    public static httpsPort = Config.setInt(process.env.HTTPS_PORT, "4435");
     public static javascriptDirectory = Config.setString(process.env.JAVASCRIPT_DIR, "../frontend/scripts");
     public static jestTimeoutSeconds = Config.setInt(process.env.JEST_TIMEOUT_SECONDS, "300");
     public static jwtPrivateKeyFile = Config.setString(process.env.JWT_PRIVATE_KEY_FILE, "./private.key");
