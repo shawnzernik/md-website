@@ -53,6 +53,7 @@ module.exports = {
         setting: "./src/tre/pages/setting.tsx",
 
         // add app pages
+        content: "./src/app/pages/content.tsx",
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -135,5 +136,11 @@ module.exports = {
         }),
 
         // add app pages
+        new HtmlWebpackPlugin({
+            template: "./src/app/template.html",
+            filename: "../static/app/pages/content.html",
+            chunks: ["common", "content"],
+            title: "Content Edit"
+        }),
     ]
 };

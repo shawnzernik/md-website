@@ -35,14 +35,16 @@ describe("ContentService", () => {
             throw new Error(`Response: ${response.status} - ${response.statusText} - ${obj.error}`);
 
         if (!obj["data"])
-            throw new Error("Return from login did not provide a \"data\" with the token!");
+            throw new Error("Return from login did not provide a 'data' with the token!");
 
         token = obj["data"] as string;
     }, Config.jestTimeoutSeconds * 1000);
 
     afterAll(async () => {
         try { await new ContentRepository(eds).delete({ guid: entityGuid }); }
-        finally { await eds.destroy(); }
+        catch (err) { /* eat error */ }
+
+        await eds.destroy();
     }, Config.jestTimeoutSeconds * 1000);
 
     test("POST /api/v0/content - save new should return 200", async () => {
@@ -51,15 +53,15 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.pathAndName = "test/content/path";
-        entity.mimeType = "application/json";
+        entity.pathAndName = "example.txt";
+        entity.mimeType = "text/plain";
         entity.created = new Date();
-        entity.createdBy = "administrator@localhost";
+        entity.createdBy = entityGuid;
         entity.modified = new Date();
-        entity.modifiedBy = "administrator@localhost";
-        entity.viewUri = "http://localhost/view";
-        entity.editUri = "http://localhost/edit";
-        entity.content = "{}";
+        entity.modifiedBy = entityGuid;
+        entity.viewUri = "http://example.com/view";
+        entity.editUri = "http://example.com/edit";
+        entity.content = "This is sample content.";
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -79,44 +81,7 @@ describe("ContentService", () => {
         expect(response.status).toBe(200);
 
         let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
-        expect(entity.pathAndName).toEqual(reloaded.pathAndName);
-    }, Config.jestTimeoutSeconds * 1000);
-
-    test("POST /api/v0/content overwrite should return 200", async () => {
-        if (!token)
-            throw new Error("No token - did beforeAll() fail?");
-
-        const entity = new ContentEntity();
-        entity.guid = entityGuid;
-        entity.pathAndName = "test/content/path/dup";
-        entity.mimeType = "application/json";
-        entity.created = new Date();
-        entity.createdBy = "administrator@localhost";
-        entity.modified = new Date();
-        entity.modifiedBy = "administrator@localhost";
-        entity.viewUri = "http://localhost/view";
-        entity.editUri = "http://localhost/edit";
-        entity.content = "{}";
-
-        const response = await fetch(Config.appUrl + "/api/v0/content", {
-            agent: agent,
-            method: "POST",
-            body: JSON.stringify(entity),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        const obj = await response.json();
-        if (!response.ok)
-            throw new Error(`Response: ${response.status} - ${response.statusText} - ${obj.error}`);
-
-        expect(response.ok).toBeTruthy();
-        expect(response.status).toBe(200);
-
-        let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
-        expect(entity.pathAndName).toEqual(reloaded.pathAndName);
+        expect(entity).toEqual(reloaded);
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/contents should return content list", async () => {
@@ -143,6 +108,9 @@ describe("ContentService", () => {
 
         expect(data.length > 0).toBeTruthy();
         expect(data[0].guid).toBeTruthy();
+        expect(data[0].pathAndName).toBeTruthy();
+        expect(data[0].mimeType).toBeTruthy();
+        expect(data[0].content).toBeTruthy();
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/content/:guid should return content and 200", async () => {

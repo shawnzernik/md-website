@@ -1,6 +1,6 @@
-import { ContentDto } from "common/src/app/models/ContentDto";
-import { FetchWrapper } from "../../tre/services/FetchWrapper";
 import { UUIDv4 } from "common/src/tre/logic/UUIDv4";
+import { FetchWrapper } from "../../tre/services/FetchWrapper";
+import { ContentDto } from "common/src/app/models/ContentDto";
 
 export class ContentService {
     public static async get(token: string, guid: string): Promise<ContentDto> {

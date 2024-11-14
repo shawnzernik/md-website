@@ -35,7 +35,7 @@ export class EntitiesDataSource extends TreEntitiesDataSource {
                 ListFilterEntity,
                 SettingEntity,
                 LogEntity,
-
+                
                 // add app entities here
                 ContentEntity
             ],

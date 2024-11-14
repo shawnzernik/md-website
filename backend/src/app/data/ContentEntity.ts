@@ -13,19 +13,19 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
     @Column({ name: "mime_type" })
     public mimeType: string = "";
 
-    @Column({ name: "created", type: "timestamp" })
+    @Column({ name: "created" })
     public created: Date = new Date();
 
     @Column({ name: "created_by" })
     public createdBy: string = "";
 
-    @Column({ name: "modified", type: "timestamp" })
+    @Column({ name: "modified" })
     public modified: Date = new Date();
 
     @Column({ name: "modified_by" })
     public modifiedBy: string = "";
 
-    @Column({ name: "deleted", type: "timestamp", nullable: true })
+    @Column({ name: "deleted", nullable: true })
     public deleted?: Date;
 
     @Column({ name: "deleted_by", nullable: true })
