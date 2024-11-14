@@ -1,9 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 INSERT INTO "menus" ("guid", "parents_guid", "order", "display", "bootstrap_icon", "url") VALUES
-('3ad2bf67-2b90-4d54-8314-224e5d624cd1', NULL, 4435, 'Markdown', 'file-earmark-text', ''),
-('527f06a9-0378-47c6-9b16-a9c0b72c757e', '3ad2bf67-2b90-4d54-8314-224e5d624cd1', 1, 'Contents', 'cloud-arrow-up', '/static/tre/pages/list.html?url_key=contents&folder=/'),
-('40af55a5-db9e-4adf-8f4b-b30cf568b502', '3ad2bf67-2b90-4d54-8314-224e5d624cd1', 2, 'Markdowns', 'file-earmark-richtext', '/static/tre/pages/list.html?url_key=markdowns&folder=/');
+('527f06a9-0378-47c6-9b16-a9c0b72c757e', 'b1e3c680-0f62-4931-8a68-4be9b4b070f7', 100, 'Contents', 'cloud-arrow-up', '/static/tre/pages/list.html?url_key=contents&folder=/');
 
 INSERT INTO "securables" ("guid", "display_name")
 SELECT 

@@ -51,6 +51,8 @@ module.exports = {
         menu: "./src/tre/pages/menu.tsx",
         list: "./src/tre/pages/list.tsx",
         setting: "./src/tre/pages/setting.tsx",
+
+        // add app pages
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -131,5 +133,7 @@ module.exports = {
             chunks: ["common", "setting"],
             title: "Setting Edit"
         }),
+
+        // add app pages
     ]
 };
