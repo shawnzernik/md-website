@@ -2,6 +2,7 @@ export interface ContentDto {
     guid: string;
     pathAndName: string;
     mimeType: string;
+    encodedSize: number;
     created: Date;
     createdBy: string;
     modified: Date;

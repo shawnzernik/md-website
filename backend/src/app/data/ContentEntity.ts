@@ -13,6 +13,9 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
     @Column({ name: "mime_type" })
     public mimeType: string = "";
 
+    @Column({ name: "encoded_size" })
+    public encodedSize: number = 0;
+
     @Column({ name: "created" })
     public created: Date = new Date();
 
@@ -44,6 +47,7 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
         this.guid = source.guid;
         this.pathAndName = source.pathAndName;
         this.mimeType = source.mimeType;
+        this.encodedSize = source.encodedSize;
         this.created = source.created;
         this.createdBy = source.createdBy;
         this.modified = source.modified;
@@ -59,6 +63,7 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
         dest.guid = this.guid;
         dest.pathAndName = this.pathAndName;
         dest.mimeType = this.mimeType;
+        dest.encodedSize = this.encodedSize;
         dest.created = this.created;
         dest.createdBy = this.createdBy;
         dest.modified = this.modified;

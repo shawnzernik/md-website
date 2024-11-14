@@ -53,15 +53,16 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.pathAndName = "example.txt";
+        entity.pathAndName = "test.txt";
         entity.mimeType = "text/plain";
+        entity.encodedSize = 1234;
         entity.created = new Date();
         entity.createdBy = entityGuid;
         entity.modified = new Date();
         entity.modifiedBy = entityGuid;
-        entity.viewUri = "http://example.com/view";
-        entity.editUri = "http://example.com/edit";
-        entity.content = "This is sample content.";
+        entity.viewUri = "http://localhost/view/test.txt";
+        entity.editUri = "http://localhost/edit/test.txt";
+        entity.content = "Sample content";
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -110,7 +111,7 @@ describe("ContentService", () => {
         expect(data[0].guid).toBeTruthy();
         expect(data[0].pathAndName).toBeTruthy();
         expect(data[0].mimeType).toBeTruthy();
-        expect(data[0].content).toBeTruthy();
+        expect(data[0].encodedSize).toBeTruthy();
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/content/:guid should return content and 200", async () => {

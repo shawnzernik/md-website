@@ -3,6 +3,7 @@ CREATE TABLE "contents" (
 
     "path_and_name" VARCHAR(500) NOT NULL,
     "mime_type" VARCHAR(250) NOT NULL,
+    "encoded_size" INT NOT NULL,
 
     "created" TIMESTAMP NOT NULL,
     "created_by" UUID NOT NULL,
@@ -11,8 +12,8 @@ CREATE TABLE "contents" (
     "deleted" TIMESTAMP,
     "deleted_by" UUID,
 
-    "view_uri" VARCHAR(250) NOT NULL,
-    "edit_uri" VARCHAR(250) NOT NULL,
+    "view_uri" VARCHAR(1024) NOT NULL,
+    "edit_uri" VARCHAR(1024) NOT NULL,
 
     "content" TEXT NOT NULL
 );
