@@ -1,25 +1,25 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column } from "typeorm";
 import { CopyInterface } from "common/src/tre/logic/CopyInterface";
 import { PasswordDto } from "common/src/tre/models/PasswordDto";
 
-@Entity('passwords')
+@Entity("passwords")
 export class PasswordEntity implements PasswordDto, CopyInterface<PasswordDto> {
     @PrimaryColumn({ name: "guid" })
     public guid: string = "";
 
-    @Column({ name: 'users_guid' })
+    @Column({ name: "users_guid" })
     public usersGuid: string = "";
 
-    @Column({ name: 'created' })
+    @Column({ name: "created" })
     public created: Date = new Date();
 
-    @Column({ name: 'salt' })
+    @Column({ name: "salt" })
     public salt: string = "";
 
-    @Column({ name: 'hash' })
+    @Column({ name: "hash" })
     public hash: string = "";
 
-    @Column({ name: 'iterations' })
+    @Column({ name: "iterations" })
     public iterations: number = 0;
 
     public copyFrom(source: PasswordDto): void {
