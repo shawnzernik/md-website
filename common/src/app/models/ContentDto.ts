@@ -9,7 +9,5 @@ export interface ContentDto {
     modifiedBy: string;
     deleted?: Date;
     deletedBy?: string;
-    viewUri: string;
-    editUri: string;
     content: string;
 }

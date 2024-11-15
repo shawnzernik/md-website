@@ -10,7 +10,7 @@ jest.setTimeout(Config.jestTimeoutSeconds * 1000);
 
 describe("ContentService", () => {
     let agent = new https.Agent({ rejectUnauthorized: false });
-    let entityGuid = "faf76b3d-ed66-4182-a7c2-7ea6562785fe";
+    let entityGuid = "f9b8b79e-5b8c-40ae-9f6b-1787d02967e9";
     let token: string | undefined;
     let eds: EntitiesDataSource;
 
@@ -43,7 +43,6 @@ describe("ContentService", () => {
     afterAll(async () => {
         try { await new ContentRepository(eds).delete({ guid: entityGuid }); }
         catch (err) { /* eat error */ }
-
         await eds.destroy();
     }, Config.jestTimeoutSeconds * 1000);
 
@@ -53,16 +52,14 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.pathAndName = "test.txt";
+        entity.pathAndName = "path/to/content.txt";
         entity.mimeType = "text/plain";
-        entity.encodedSize = 1234;
+        entity.encodedSize = 12345;
         entity.created = new Date();
         entity.createdBy = entityGuid;
         entity.modified = new Date();
         entity.modifiedBy = entityGuid;
-        entity.viewUri = "http://localhost/view/test.txt";
-        entity.editUri = "http://localhost/edit/test.txt";
-        entity.content = "Sample content";
+        entity.content = "This is test content.";
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -112,6 +109,7 @@ describe("ContentService", () => {
         expect(data[0].pathAndName).toBeTruthy();
         expect(data[0].mimeType).toBeTruthy();
         expect(data[0].encodedSize).toBeTruthy();
+        expect(data[0].content).toBeTruthy();
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/content/:guid should return content and 200", async () => {

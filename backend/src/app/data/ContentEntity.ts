@@ -34,12 +34,6 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
     @Column({ name: "deleted_by", nullable: true })
     public deletedBy?: string;
 
-    @Column({ name: "view_uri" })
-    public viewUri: string = "";
-
-    @Column({ name: "edit_uri" })
-    public editUri: string = "";
-
     @Column({ name: "content" })
     public content: string = "";
 
@@ -54,8 +48,6 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
         this.modifiedBy = source.modifiedBy;
         this.deleted = source.deleted;
         this.deletedBy = source.deletedBy;
-        this.viewUri = source.viewUri;
-        this.editUri = source.editUri;
         this.content = source.content;
     }
 
@@ -70,8 +62,6 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
         dest.modifiedBy = this.modifiedBy;
         dest.deleted = this.deleted;
         dest.deletedBy = this.deletedBy;
-        dest.viewUri = this.viewUri;
-        dest.editUri = this.editUri;
         dest.content = this.content;
     }
 }
