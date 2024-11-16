@@ -4,7 +4,6 @@ import { ResponseDto } from "common/src/tre/models/ResponseDto";
 import { EntitiesDataSource } from "../data/EntitiesDataSource";
 import { AuthLogic } from "../logic/AuthLogic";
 import { Logger } from "../Logger";
-import { MimeTypeResponseDto } from "../../app/model/MimeTypeResponseDto";
 
 export type Method<T> = (logger: Logger, req: express.Request, ds: EntitiesDataSource) => Promise<T>;
 
@@ -78,8 +77,8 @@ export abstract class BaseService {
             const ret = await method(logger, req, ds) as any;
             resp
                 .status(HttpStatus.OK)
-                .setHeader("Content-Type", ret.mimetype)
-                .send(ret.contents);
+                .setHeader("Content-Type", "application/octet-stream")
+                .send(Buffer.from(ret.contents));
         } catch (err: any) {
             resp.status(HttpStatus.BAD_REQUEST).send({ error: err["message"] } as ResponseDto<any>);
             console.error(err);

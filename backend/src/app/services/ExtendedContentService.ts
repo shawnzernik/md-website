@@ -6,6 +6,8 @@ import { ContentDto } from "common/src/app/models/ContentDto";
 import { ContentRepository } from "../data/ContentRepository";
 import { PayloadRepository } from "../data/PayloadRepository";
 import { MimeTypeResponseDto } from "../model/MimeTypeResponseDto";
+import { PayloadLogic } from "common/src/app/logic/PayloadLogic";
+import { decode } from "punycode";
 
 export class ExtendedContentService extends BaseService {
     protected constructDataSource(): EntitiesDataSource {
@@ -38,14 +40,11 @@ export class ExtendedContentService extends BaseService {
         if (!payloadDto)
             throw new Error(`Could not locate content '${pathAndName}' payload by GUID (${contentDto.guid})!`);
 
-        let decoded = payloadDto.content;
-        let base64 = decoded.substring("btoa::".length);
-        if (contentDto.base64Encoded)
-            decoded = atob(base64);
+        let decoded = PayloadLogic.decode(payloadDto.content);
 
         return {
             mimetype: contentDto.mimeType,
-            contents: decoded
+            contents: PayloadLogic.uint8ArrayToString(decoded)
         } as MimeTypeResponseDto;
     }
     public async getPathAndName(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<ContentDto | null> {

@@ -1,8 +1,5 @@
 import * as React from "react";
-import { ButtonTheme } from "./ButtonTheme";
 import { FormTheme } from "./FormTheme";
-import { Dialogue, ErrorMessage } from "./Navigation";
-import { BasePage, BasePageState } from "./BasePage";
 
 export interface UploadedFile {
     name: string;
@@ -13,7 +10,7 @@ export interface UploadedFile {
 interface Props {
     page?: any;
     children?: React.ReactNode;
-    fileUploaded?: (fileinfo: UploadedFile) => void;
+    fileUploaded?: (files: FileList) => void;
 }
 
 interface State {
@@ -58,24 +55,7 @@ export class Form extends React.Component<Props, State> {
                     e.preventDefault();
                     this.setState({ highlighted: false });
 
-                    const files: FileList = e.dataTransfer.files;
-                    if (files.length > 1) {
-                        this.props.page.events.setMessage({
-                            title: "Error",
-                            content: "Form can only take one upload at a time!",
-                            buttons: { label: "OK", onClicked: () => { } }
-                        });
-                    }
-
-                    const file = files.item(0);
-                    const buff = await file.arrayBuffer();
-                    const base64 = btoa(String.fromCharCode(...Array.from(new Uint8Array(buff))));
-
-                    this.props.fileUploaded({
-                        name: file.name,
-                        mimetype: file.type,
-                        contents: "btoa::" + base64
-                    });
+                    this.props.fileUploaded(e.dataTransfer.files);
                 }}
                 style={{ ...FormTheme, ...styles }
                 }

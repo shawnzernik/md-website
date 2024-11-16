@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { ErrorMessage, Navigation } from "../../tre/components/Navigation";
 import { BasePage, BasePageState } from "../../tre/components/BasePage";
 import { Heading } from "../../tre/components/Heading";
-import { Form, UploadedFile } from "../../tre/components/Form";
+import { Form } from "../../tre/components/Form";
 import { Field } from "../../tre/components/Field";
 import { Input } from "../../tre/components/Input";
 import { ContentDto } from "common/src/app/models/ContentDto";
@@ -24,6 +24,7 @@ import { SecurableService } from "../../tre/services/SecurableService";
 import { ContentMimeTypeDto } from "common/src/app/models/ContentMimeTypeDto";
 import { ContentLogic } from "common/src/app/logic/ContentLogic";
 import { PayloadDto } from "common/src/app/models/PayloadDto";
+import { PayloadLogic } from "common/src/app/logic/PayloadLogic";
 import { PayloadService } from "../services/PayloadService";
 
 interface Props { }
@@ -58,7 +59,7 @@ class Page extends BasePage<Props, State> {
                 createdBy: "",
                 modified: date,
                 modifiedBy: "",
-                base64Encoded: false,
+                binary: false,
                 securablesGuid: ""
             },
             payloadDto: {
@@ -164,7 +165,7 @@ class Page extends BasePage<Props, State> {
 
         // load existing
         contentDto = await ContentService.get(token, guid);
-        if (!contentDto.base64Encoded)
+        if (!contentDto.binary)
             payloadDto = await PayloadService.get(token, guid);
         else
             payloadDto = undefined;
@@ -250,9 +251,16 @@ class Page extends BasePage<Props, State> {
         }
     }
 
-    private async fileUploaded(fileinfo: UploadedFile) {
-        if (!this.mimeTypeToDescription[fileinfo.mimetype]) {
-            await ErrorMessage(this, new Error(`MIME type '${fileinfo.mimetype}' is invalid!`));
+    private async fileUploaded(files: FileList) {
+        if (files.length != 1) {
+            ErrorMessage(this, new Error(`You can only upload one file. We received ${files.length} file(s)!`));
+            return;
+        }
+
+        const file = files.item(0);
+
+        if (!this.mimeTypeToDescription[file.type]) {
+            await ErrorMessage(this, new Error(`MIME type '${file.type}' is invalid!`));
             return;
         }
 
@@ -263,17 +271,19 @@ class Page extends BasePage<Props, State> {
             if (part.length > 0 && part !== "." && part !== "..")
                 pathAndName += part + "/";
         }
-        pathAndName += fileinfo.name;
+        pathAndName += file.name;
+
+        const arrBuffer = await file.arrayBuffer();
+        const base64 = PayloadLogic.encode(new Uint8Array(arrBuffer));
 
         const contentDto = this.jsonCopy(this.state.contentDto);
         contentDto.pathAndName = pathAndName;
-        contentDto.mimeType = fileinfo.mimetype;
-        contentDto.encodedSize = fileinfo.contents.length;
-
+        contentDto.mimeType = file.type;
+        contentDto.encodedSize = base64.length;
         const payloadDto: PayloadDto = {
             guid: contentDto.guid,
-            content: fileinfo.contents
-        }
+            content: base64
+        };
 
         ContentLogic.normalize(contentDto, payloadDto, this.mimeTypes);
 
@@ -334,11 +344,11 @@ class Page extends BasePage<Props, State> {
                                 await this.updateState({ contentDto: newModel });
                             }}
                         /></Field>
-                        <Field label="Base64 Encoded" size={1}><Checkbox
-                            checked={this.state.contentDto.base64Encoded}
+                        <Field label="Binary" size={1}><Checkbox
+                            checked={this.state.contentDto.binary}
                             onChange={async (value) => {
                                 const newModel = this.jsonCopy(this.state.contentDto);
-                                newModel.base64Encoded = value;
+                                newModel.binary = value;
                                 await this.updateState({ contentDto: newModel });
                             }}
                         /></Field>
@@ -374,17 +384,17 @@ class Page extends BasePage<Props, State> {
                     {this.state.contentDto.deleted ? <Button label="Restore" onClick={this.restoreClicked.bind(this)} /> : null}
                 </FlexRow>
                 {
-                    this.state.contentDto.base64Encoded
+                    this.state.contentDto.binary
                         ? <Field label="Download">
                             <a target="_blank" href={decodedUrl}>{decodedUrl}</a>
                         </Field>
                         : <Field label="Content"><TextArea
                             showAll={true}
                             monospace={true}
-                            value={this.state.payloadDto.content}
+                            value={PayloadLogic.uint8ArrayToString(PayloadLogic.decode(this.state.payloadDto.content))}
                             onChange={async (value) => {
                                 const newModel = this.jsonCopy(this.state.payloadDto);
-                                newModel.content = value;
+                                newModel.content = PayloadLogic.encode(PayloadLogic.stringToUint8Array(value));
                                 await this.updateState({ payloadDto: newModel });
                             }}
                         /></Field>

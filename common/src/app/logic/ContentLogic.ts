@@ -1,6 +1,7 @@
 import { ContentDto } from "../models/ContentDto";
 import { ContentMimeTypeDto } from "../models/ContentMimeTypeDto";
 import { PayloadDto } from "../models/PayloadDto";
+import { PayloadLogic } from "./PayloadLogic";
 
 export class ContentLogic {
     public static normalize(contentDto: ContentDto, payloadDto: PayloadDto, mimeTypes: ContentMimeTypeDto[]): void {
@@ -13,27 +14,22 @@ export class ContentLogic {
             if (!mimeType && t.mimetype == contentDto.mimeType)
                 mimeType = t;
         });
-
         if (!mimeType)
             throw new Error(`MIME type '${contentDto.mimeType}' is not valid!`);
 
-        let isEncoded = payloadDto.content.startsWith("btoa::");
+        const contents = PayloadLogic.decode(payloadDto.content);
 
         let isBinary = false;
-        for (let cnt = 0; cnt < payloadDto.content.length; cnt++) {
-            let code = payloadDto.content.charCodeAt(cnt);
+        for (let cnt = 0; cnt < contents.length; cnt++) {
+            let code = contents[cnt];
             if ((code < 32 || code > 126) && code !== 9 && code !== 10 && code !== 13) {
                 isBinary = true;
                 break;
             }
         }
 
-        if (isEncoded && isBinary)
-            throw new Error("The contents is both encoded and binary - this should not be possible!");
-
         if (isBinary || (mimeType as ContentMimeTypeDto).encode) {
-            contentDto.base64Encoded = true;
-            payloadDto.content = "btoa::" + btoa(payloadDto.content);
+            contentDto.binary = true;
             contentDto.encodedSize = payloadDto.content.length;
         }
     }

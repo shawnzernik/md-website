@@ -36,7 +36,7 @@ class Page extends BasePage<Props, State> {
                 createdBy: "",
                 modified: date,
                 modifiedBy: "",
-                base64Encoded: false,
+                binary: false,
                 securablesGuid: ""
             },
             payloadDto: {
@@ -69,7 +69,7 @@ class Page extends BasePage<Props, State> {
             return;
         }
 
-        if (!contentDto.base64Encoded) {
+        if (!contentDto.binary) {
             await ErrorMessage(this, new Error("Contents is binary!"));
             return;
         }
