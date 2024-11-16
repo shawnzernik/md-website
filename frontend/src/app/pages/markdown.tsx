@@ -2,8 +2,6 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorMessage, Navigation } from "../../tre/components/Navigation";
 import { BasePage, BasePageState } from "../../tre/components/BasePage";
-import { Heading } from "../../tre/components/Heading";
-import { Form } from "../../tre/components/Form";
 import { ContentDto } from "common/src/app/models/ContentDto";
 import { UUIDv4 } from "common/src/tre/logic/UUIDv4";
 import { ContentService } from "../services/ContentService";
@@ -11,6 +9,7 @@ import { AuthService } from "../../tre/services/AuthService";
 import { PayloadDto } from "common/src/app/models/PayloadDto";
 import { PayloadService } from "../services/PayloadService";
 import { Markdown } from "../../tre/components/Markdown";
+import { PayloadLogic } from "common/src/app/logic/PayloadLogic";
 
 interface Props { }
 interface State extends BasePageState {
@@ -19,8 +18,12 @@ interface State extends BasePageState {
 }
 
 class Page extends BasePage<Props, State> {
+    private navRef: React.RefObject<Navigation>;
+
     public constructor(props: Props) {
         super(props);
+
+        this.navRef = React.createRef();
 
         const date = new Date(Date.now());
 
@@ -53,6 +56,12 @@ class Page extends BasePage<Props, State> {
 
         const guid = this.queryString("guid");
         const pathAndName = this.queryString("pathAndName");
+
+        const topMenu = this.queryString("topMenu") || "";
+        const leftMenu = this.queryString("leftMenu") || "";
+        this.navRef.current.setMenus(topMenu, leftMenu);
+
+
         let contentDto: ContentDto;
         if (guid && pathAndName) {
             await ErrorMessage(this, new Error("You must provide either guid or path and name, not both!"));
@@ -69,7 +78,7 @@ class Page extends BasePage<Props, State> {
             return;
         }
 
-        if (!contentDto.binary) {
+        if (contentDto.binary) {
             await ErrorMessage(this, new Error("Contents is binary!"));
             return;
         }
@@ -90,13 +99,21 @@ class Page extends BasePage<Props, State> {
     }
 
     public render(): React.ReactNode {
+        let str = "";
+
+        if (this.state.payloadDto) {
+            const buff = PayloadLogic.decode(this.state.payloadDto.content);
+            str = PayloadLogic.uint8ArrayToString(buff);
+        }
+
         return (
             <Navigation
+                ref={this.navRef}
                 state={this.state} events={this.events}
-                topMenuGuid="b1e3c680-0f62-4931-8a68-4be9b4b070f7"
-                leftMenuGuid="527f06a9-0378-47c6-9b16-a9c0b72c757e"
+                topMenuGuid=""
+                leftMenuGuid=""
             >
-                <Markdown page={this}>{this.state.payloadDto ? this.state.payloadDto.content : ""}</Markdown>
+                <Markdown page={this}>{str}</Markdown>
             </Navigation>
         );
     }

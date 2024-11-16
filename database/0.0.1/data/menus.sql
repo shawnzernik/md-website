@@ -4,9 +4,9 @@ INSERT INTO "menus" ("guid", "parents_guid", "order", "display", "bootstrap_icon
 ('b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', NULL, 1, 'Session', 'person-fill', ''),
 ('db0d6063-2266-4bfb-8c96-44dbb90cddf2', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 1, 'Login', 'door-open-fill', '/static/tre/pages/login.html'),
 ('ff3f0659-050e-4d60-97df-84cbfbd90c62', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 2, 'Logout', 'door-closed-fill', '/static/tre/pages/login.html'),
-('5a8a209b-e6c1-42e4-8bc9-f144feec6d8e', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 3, 'Copyright', 'c-circle-fill', '/static/tre/pages/copyright.html'),
+('5a8a209b-e6c1-42e4-8bc9-f144feec6d8e', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 3, 'Copyright', 'c-circle-fill', '/static/app/pages/markdown.html?pathAndName=/Copyright.md&topMenu=b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3&leftMenu=5a8a209b-e6c1-42e4-8bc9-f144feec6d8e'),
 ('c30341f3-f40e-4f94-96e5-1e63f9ac899e', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 4, 'Account', 'person-vcard', '/static/tre/pages/account.html'),
-('4fa7b2ae-953d-45ed-bc83-2194176b0c59', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 5, 'Help', 'question-circle-fill', '/static/tre/pages/help.html'),
+('4fa7b2ae-953d-45ed-bc83-2194176b0c59', 'b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3', 5, 'Help', 'question-circle-fill', '/static/app/pages/markdown.html?pathAndName=/Help.md&topMenu=b9aeb1c2-4f07-4e91-bbef-25ed565b6ab3&leftMenu=4fa7b2ae-953d-45ed-bc83-2194176b0c59'),
 
 ('b1e3c680-0f62-4931-8a68-4be9b4b070f7', NULL, 3, 'System', 'gear-fill', ''),
 ('67fa4231-5b8e-4639-89cb-5f15a9207a83', 'b1e3c680-0f62-4931-8a68-4be9b4b070f7', 1, 'Users', 'people-fill', '/static/tre/pages/lists.html?url_key=users'),

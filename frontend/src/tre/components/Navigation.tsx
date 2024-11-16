@@ -74,6 +74,12 @@ export class Navigation extends React.Component<Props, State> {
     private securables: Dictionary<SecurableDto> = {};
     private auth: AuthLogic;
 
+    public setMenus(top: string, left: string) {
+        this.setState({
+            activeLeftMenuGuid: left,
+            activeTopMenuGuid: top
+        });
+    }
 
     public constructor(props: Props) {
         super(props);
@@ -86,7 +92,6 @@ export class Navigation extends React.Component<Props, State> {
             activeLeftMenuGuid: this.props.leftMenuGuid,
         };
     }
-
 
     public async componentDidMount(): Promise<void> {
         this.props.events.setLoading(true);
@@ -132,7 +137,6 @@ export class Navigation extends React.Component<Props, State> {
 
         this.props.events.setLoading(false);
     }
-
 
     public render(): React.ReactNode {
         if (!this.props.state) {

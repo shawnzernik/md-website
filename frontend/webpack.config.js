@@ -54,6 +54,7 @@ module.exports = {
 
         // add app pages
         content: "./src/app/pages/content.tsx",
+        markdown: "./src/app/pages/markdown.tsx",
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -141,6 +142,12 @@ module.exports = {
             filename: "../static/app/pages/content.html",
             chunks: ["common", "content"],
             title: "Content Edit"
+        }),
+        new HtmlWebpackPlugin({
+            template: "./src/app/template.html",
+            filename: "../static/app/pages/markdown.html",
+            chunks: ["common", "markdown"],
+            title: "Markdown"
         }),
     ]
 };

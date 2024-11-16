@@ -293,6 +293,10 @@ class Page extends BasePage<Props, State> {
         });
     }
 
+    private viewClicked() {
+        window.location.assign("markdown.html?pathAndName=" + this.state.contentDto.pathAndName);
+    }
+
     public render(): React.ReactNode {
         const decodedUrl = `/api/v0/content/decoded${this.state.contentDto.pathAndName}`;
 
@@ -382,6 +386,7 @@ class Page extends BasePage<Props, State> {
                     {this.state.contentDto.deleted ? null : <Button label="Save" onClick={this.saveClicked.bind(this)} />}
                     {this.state.contentDto.deleted ? null : <Button label="Delete" onClick={this.deleteClicked.bind(this)} />}
                     {this.state.contentDto.deleted ? <Button label="Restore" onClick={this.restoreClicked.bind(this)} /> : null}
+                    {this.state.contentDto.mimeType == "text/markdown" ? <Button label="View" onClick={this.viewClicked.bind(this)} /> : null}
                 </FlexRow>
                 {
                     this.state.contentDto.binary

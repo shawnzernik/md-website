@@ -1,6 +1,7 @@
 CREATE TABLE "contents" (
     "guid" UUID PRIMARY KEY,
 
+    "title" VARCHAR(250) NOT NULL
     "path_and_name" VARCHAR(500) NOT NULL UNIQUE,
     "mime_type" VARCHAR(250) NOT NULL,
     "binary" BOOLEAN NOT NULL,
