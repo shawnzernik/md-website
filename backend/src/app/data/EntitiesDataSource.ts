@@ -13,6 +13,7 @@ import { SecurableEntity } from "../../tre/data/SecurableEntity";
 import { SettingEntity } from "../../tre/data/SettingEntity";
 import { UserEntity } from "../../tre/data/UserEntity";
 import { ContentEntity } from "../../app/data/ContentEntity";
+import { PayloadEntity } from "../../app/data/PayloadEntity";
 
 export class EntitiesDataSource extends TreEntitiesDataSource {
     public constructor(options?: DataSourceOptions) {
@@ -37,7 +38,8 @@ export class EntitiesDataSource extends TreEntitiesDataSource {
                 LogEntity,
                 
                 // add app entities here
-                ContentEntity
+                ContentEntity,
+                PayloadEntity
             ],
         });
     }

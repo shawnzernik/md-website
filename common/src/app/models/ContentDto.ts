@@ -11,5 +11,4 @@ export interface ContentDto {
     modifiedBy: string;
     deleted?: Date;
     deletedBy?: string;
-    content: string;
 }

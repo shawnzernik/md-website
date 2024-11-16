@@ -13,6 +13,7 @@ import { SettingService } from "./tre/services/SettingService";
 import { Logger } from "./tre/Logger";
 import { WebApp } from "./tre/WebApp";
 import { ContentService } from "./app/services/ContentService";
+import { PayloadService } from "./app/services/PayloadService";
 
 const app = new WebApp((logger: Logger, app: express.Express) => {
     new AuthService(logger, app);
@@ -26,8 +27,7 @@ const app = new WebApp((logger: Logger, app: express.Express) => {
     new ListService(logger, app);
     new ListFilterService(logger, app);
     new SettingService(logger, app);
-
-    // add app routes here
     new ContentService(logger, app);
+    new PayloadService(logger, app);
 });
 app.execute();
