@@ -44,7 +44,7 @@ export class ExtendedContentService extends BaseService {
 
         return {
             mimetype: contentDto.mimeType,
-            contents: PayloadLogic.uint8ArrayToString(decoded)
+            contents: decoded
         } as MimeTypeResponseDto;
     }
     public async getPathAndName(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<ContentDto | null> {

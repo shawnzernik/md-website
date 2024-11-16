@@ -1,4 +1,4 @@
 export interface MimeTypeResponseDto {
     mimetype: string;
-    contents: string;
+    contents: Uint8Array;
 }

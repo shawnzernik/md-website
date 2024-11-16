@@ -2,7 +2,7 @@ export class PayloadLogic {
     private static prefix = "base64::";
 
     public static encode(value: Uint8Array): string {
-        const base64 = this.arrayBufferToBase64(value);
+        const base64 = this.uint8ArrayToBase64(value);
         return this.prefix + base64;
     }
 
@@ -17,11 +17,17 @@ export class PayloadLogic {
         return this.base64ToUint8Array(base64);
     }
 
-    private static arrayBufferToBase64(buffer: Uint8Array): string {
+    private static uint8ArrayToBase64(value: Uint8Array): string {
         let binary = '';
-        for (let i = 0; i < buffer.length; i++) {
-            binary += String.fromCharCode(buffer[i]);
+        const CHUNK_SIZE = 0x8000; // Process in chunks to avoid argument limits
+
+        for (let i = 0; i < value.length; i += CHUNK_SIZE) {
+            binary += String.fromCharCode.apply(
+                null,
+                value.subarray(i, i + CHUNK_SIZE) as unknown as number[]
+            );
         }
+
         return btoa(binary);
     }
 
@@ -36,7 +42,7 @@ export class PayloadLogic {
     }
 
     public static uint8ArrayToString(data: Uint8Array): string {
-        return new TextDecoder("utf-8").decode(data);
+        return new TextDecoder().decode(data);
     }
 
     public static stringToUint8Array(data: string): Uint8Array {
