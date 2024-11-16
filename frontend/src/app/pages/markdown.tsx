@@ -32,6 +32,7 @@ class Page extends BasePage<Props, State> {
             ...BasePage.defaultState,
             contentDto: {
                 guid: newGuid,
+                title: "",
                 pathAndName: "",
                 mimeType: "",
                 encodedSize: 0,
@@ -61,7 +62,6 @@ class Page extends BasePage<Props, State> {
         const leftMenu = this.queryString("leftMenu") || "";
         this.navRef.current.setMenus(topMenu, leftMenu);
 
-
         let contentDto: ContentDto;
         if (guid && pathAndName) {
             await ErrorMessage(this, new Error("You must provide either guid or path and name, not both!"));
@@ -87,6 +87,8 @@ class Page extends BasePage<Props, State> {
             await ErrorMessage(this, new Error("Contents MIME type is not markdown!"));
             return;
         }
+
+        document.title = contentDto.title;
 
         let payloadDto = await PayloadService.get(token, contentDto.guid);
 

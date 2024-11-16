@@ -52,6 +52,7 @@ class Page extends BasePage<Props, State> {
             ...BasePage.defaultState,
             contentDto: {
                 guid: newGuid,
+                title: "",
                 pathAndName: "",
                 mimeType: "",
                 encodedSize: 0,
@@ -314,6 +315,14 @@ class Page extends BasePage<Props, State> {
                     <Field label="GUID" size={3}><Input
                         readonly={true}
                         value={this.state.contentDto.guid}
+                    /></Field>
+                    <Field label="Title"><Input
+                        value={this.state.contentDto.title}
+                        onChange={async (value) => {
+                            const newModel = this.jsonCopy(this.state.contentDto);
+                            newModel.title = value;
+                            await this.updateState({ contentDto: newModel });
+                        }}
                     /></Field>
                     <Field label="Path and Name"><Input
                         value={this.state.contentDto.pathAndName}
