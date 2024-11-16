@@ -14,4 +14,12 @@ WHERE
         FROM "permissions" 
         WHERE 
             "groups_guid" = '046499bd-1f75-4024-b7a9-307e6a99e1ec' -- administrators
-    )
+    );
+
+INSERT INTO "permissions" ("guid", "groups_guid", "securables_guid", "is_allowed") VALUES
+(
+    uuid_generate_v4(), 
+    '91a56f4a-1c63-4fe2-8450-2645d12fd9b9', -- anonymous
+    ( SELECT "guid" from "securables" WHERE "display_name" = 'Content:Public'), 
+    TRUE
+);

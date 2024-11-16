@@ -3,7 +3,7 @@ CREATE TABLE "contents" (
 
     "path_and_name" VARCHAR(500) NOT NULL UNIQUE,
     "mime_type" VARCHAR(250) NOT NULL,
-    "base64_encoded" BOOLEAN NOT NULL,
+    "binary" BOOLEAN NOT NULL,
     "encoded_size" INT NOT NULL,
     "securables_guid" UUID NOT NULL,
 

@@ -12,6 +12,15 @@ export class ContentService {
         return ret;
     }
 
+    public static async getByPathAndName(token: string, pathAndName: string): Promise<ContentDto> {
+        const ret = await FetchWrapper.get<ContentDto>({
+            url: "/api/v0/content/pn" + pathAndName,
+            corelation: UUIDv4.generate(),
+            token: token
+        });
+        return ret;
+    }
+
     public static async list(token: string): Promise<ContentDto[]> {
         const ret = await FetchWrapper.get<ContentDto[]>({
             url: "/api/v0/contents",

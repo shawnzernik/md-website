@@ -4,10 +4,16 @@ import { FormTheme } from "./FormTheme";
 import { Dialogue, ErrorMessage } from "./Navigation";
 import { BasePage, BasePageState } from "./BasePage";
 
+export interface UploadedFile {
+    name: string;
+    mimetype: string;
+    contents: string;
+}
+
 interface Props {
     page?: any;
     children?: React.ReactNode;
-    fileUploaded?: (fileinfo: { name: string, mimetype: string, contents: string }) => void;
+    fileUploaded?: (fileinfo: UploadedFile) => void;
 }
 
 interface State {
@@ -63,16 +69,12 @@ export class Form extends React.Component<Props, State> {
 
                     const file = files.item(0);
                     const buff = await file.arrayBuffer();
-                    const arrInt = new Uint8Array(buff);
-
-                    let str = "";
-                    for (let cnt = 0; cnt < arrInt.length; cnt++)
-                        str += String.fromCharCode(arrInt[cnt]);
+                    const base64 = btoa(String.fromCharCode(...Array.from(new Uint8Array(buff))));
 
                     this.props.fileUploaded({
                         name: file.name,
                         mimetype: file.type,
-                        contents: str
+                        contents: "btoa::" + base64
                     });
                 }}
                 style={{ ...FormTheme, ...styles }

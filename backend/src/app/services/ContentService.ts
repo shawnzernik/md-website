@@ -16,15 +16,15 @@ export class ContentService extends BaseService {
 
         logger.trace();
 
-        app.get("/api/v0/content/:guid", (req, resp) => { this.methodWrapper(req, resp, this.getGuid) });
-        app.get("/api/v0/contents", (req, resp) => { this.methodWrapper(req, resp, this.getList) });
-        app.post("/api/v0/content", (req, resp) => { this.methodWrapper(req, resp, this.postSave) });
-        app.delete("/api/v0/content/:guid", (req, resp) => { this.methodWrapper(req, resp, this.deleteGuid) });
+        app.get("/api/v0/content/:guid", (req, resp) => { this.responseDtoWrapper(req, resp, this.getGuid) });
+        app.get("/api/v0/contents", (req, resp) => { this.responseDtoWrapper(req, resp, this.getList) });
+        app.post("/api/v0/content", (req, resp) => { this.responseDtoWrapper(req, resp, this.postSave) });
+        app.delete("/api/v0/content/:guid", (req, resp) => { this.responseDtoWrapper(req, resp, this.deleteGuid) });
     }
 
     public async getGuid(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<ContentDto | null> {
         await logger.trace();
-        await BaseService.checkSecurity(logger, "Content:Read", req, ds);
+        await BaseService.checkSecurityName(logger, "Content:Read", req, ds);
 
         const guid = req.params["guid"];
         const ret = await new ContentRepository(ds).findOneBy({ guid: guid });
@@ -33,15 +33,15 @@ export class ContentService extends BaseService {
 
     public async getList(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<ContentDto[]> {
         await logger.trace();
-        await BaseService.checkSecurity(logger, "Content:List", req, ds);
+        await BaseService.checkSecurityName(logger, "Content:List", req, ds);
 
-        const ret = await new ContentRepository(ds).find();
+        const ret = await new ContentRepository(ds).find({ order: { pathAndName: "ASC" } });
         return ret;
     }
 
     public async postSave(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<void> {
         await logger.trace();
-        await BaseService.checkSecurity(logger, "Content:Save", req, ds);
+        await BaseService.checkSecurityName(logger, "Content:Save", req, ds);
 
         const entity = new ContentEntity();
         entity.copyFrom(req.body as ContentDto);
@@ -50,7 +50,7 @@ export class ContentService extends BaseService {
 
     public async deleteGuid(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<void> {
         await logger.trace();
-        await BaseService.checkSecurity(logger, "Content:Delete", req, ds);
+        await BaseService.checkSecurityName(logger, "Content:Delete", req, ds);
 
         const guid = req.params["guid"];
         await new ContentRepository(ds).delete({ guid: guid });

@@ -14,6 +14,7 @@ import { Logger } from "./tre/Logger";
 import { WebApp } from "./tre/WebApp";
 import { ContentService } from "./app/services/ContentService";
 import { PayloadService } from "./app/services/PayloadService";
+import { ExtendedContentService } from "./app/services/ExtendedContentService";
 
 const app = new WebApp((logger: Logger, app: express.Express) => {
     new AuthService(logger, app);
@@ -29,5 +30,6 @@ const app = new WebApp((logger: Logger, app: express.Express) => {
     new SettingService(logger, app);
     new ContentService(logger, app);
     new PayloadService(logger, app);
+    new ExtendedContentService(logger, app);
 });
 app.execute();
