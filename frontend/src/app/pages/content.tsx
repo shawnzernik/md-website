@@ -274,23 +274,7 @@ class Page extends BasePage<Props, State> {
         pathAndName += file.name;
 
         const arrBuffer = await file.arrayBuffer();
-        const uint8Array = new Uint8Array(arrBuffer);
         const base64 = PayloadLogic.encode(new Uint8Array(arrBuffer));
-        const decodedUint8Array = PayloadLogic.decode(base64);
-
-        if (uint8Array.length !== decodedUint8Array.length) {
-            await ErrorMessage(this, new Error(`uint8Array.length (${uint8Array.length}) !==  decodedUint8Array.length (${decodedUint8Array.length})`));
-            return;
-        }
-
-        for (let cnt = 0; cnt < uint8Array.length; cnt++) {
-            if (uint8Array[cnt] !== decodedUint8Array[cnt]) {
-                await ErrorMessage(this, new Error(`uint8Array[${cnt}] !== decodedUint8Array[${cnt}]`));
-                return;
-            }
-        }
-
-        await Dialogue(this, "Encode Decode", "The decoded base64 matches the original!");
 
         const contentDto = this.jsonCopy(this.state.contentDto);
         contentDto.pathAndName = pathAndName;
