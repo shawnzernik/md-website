@@ -3,14 +3,16 @@ CREATE TABLE "contents" (
 
     "path_and_name" VARCHAR(500) NOT NULL UNIQUE,
     "mime_type" VARCHAR(250) NOT NULL,
+    "base64_encoded" BOOLEAN NOT NULL,
     "encoded_size" INT NOT NULL,
+    "securables_guid" UUID NOT NULL,
 
     "created" TIMESTAMP NOT NULL,
     "created_by" UUID NOT NULL,
     "modified" TIMESTAMP NOT NULL,
     "modified_by" UUID NOT NULL,
     "deleted" TIMESTAMP,
-    "deleted_by" UUID,
-
-    "content" TEXT NOT NULL
+    "deleted_by" UUID
 );
+
+CREATE UNIQUE INDEX "uk_contents_path_and_name_deleted" ON "contents" ("path_and_name", "deleted");

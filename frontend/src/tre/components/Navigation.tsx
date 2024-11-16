@@ -150,9 +150,11 @@ export class Navigation extends React.Component<Props, State> {
                     key={menu.guid}
                     style={NavigationTheme.stageTopMenu}
                     onClick={() => {
-                        this.setState({
-                            showMenu: true,
-                            activeTopMenuGuid: menu.guid
+                        this.setState((prev) => {
+                            return {
+                                activeTopMenuGuid: menu.guid,
+                                showMenu: !prev.showMenu
+                            }
                         });
                     }}
                 >

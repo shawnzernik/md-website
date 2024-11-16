@@ -19,6 +19,7 @@ export class SettingService extends BaseService {
         app.get("/api/v0/setting/:guid", (req, resp) => { this.methodWrapper(req, resp, this.getGuid) });
         app.get("/api/v0/settings", (req, resp) => { this.methodWrapper(req, resp, this.getList) });
         app.post("/api/v0/setting", (req, resp) => { this.methodWrapper(req, resp, this.postSave) });
+        app.post("/api/v0/setting/key", (req, resp) => { this.methodWrapper(req, resp, this.postKey) });
         app.delete("/api/v0/setting/:guid", (req, resp) => { this.methodWrapper(req, resp, this.deleteGuid) });
     }
 
@@ -46,6 +47,20 @@ export class SettingService extends BaseService {
         const entity = new SettingEntity();
         entity.copyFrom(req.body as SettingDto);
         await new SettingRepository(ds).save([entity]);
+    }
+    public async postKey(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<SettingDto | null> {
+        await logger.trace();
+        await BaseService.checkSecurity(logger, "Setting:Read", req, ds);
+
+        if (!req.body)
+            throw new Error("Body was not provided!");
+
+        const key = req.body.key;
+        if (!key)
+            throw new Error("Key not provided!");
+
+        const setting = await new SettingRepository(ds).findByKey(key);
+        return setting;
     }
 
     public async deleteGuid(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<void> {

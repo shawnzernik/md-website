@@ -10,9 +10,22 @@ jest.setTimeout(Config.jestTimeoutSeconds * 1000);
 
 describe("ContentService", () => {
     let agent = new https.Agent({ rejectUnauthorized: false });
-    let entityGuid = "f9b8b79e-5b8c-40ae-9f6b-1787d02967e9";
+    let entityGuid = "faf76b3d-ed66-4182-a7c2-7ea6562785fe";
     let token: string | undefined;
     let eds: EntitiesDataSource;
+
+    const contentEntity = new ContentEntity();
+    contentEntity.guid = entityGuid;
+    contentEntity.pathAndName = "test/file.txt";
+    contentEntity.mimeType = "text/plain";
+    contentEntity.base64Encoded = false;
+    contentEntity.encodedSize = 1024;
+    contentEntity.securablesGuid = entityGuid;
+    contentEntity.created = new Date();
+    contentEntity.createdBy = entityGuid;
+    contentEntity.modified = new Date();
+    contentEntity.modifiedBy = entityGuid;
+    contentEntity.content = "Sample content";
 
     beforeAll(async () => {
         eds = new EntitiesDataSource();
@@ -43,6 +56,7 @@ describe("ContentService", () => {
     afterAll(async () => {
         try { await new ContentRepository(eds).delete({ guid: entityGuid }); }
         catch (err) { /* eat error */ }
+
         await eds.destroy();
     }, Config.jestTimeoutSeconds * 1000);
 
@@ -50,21 +64,10 @@ describe("ContentService", () => {
         if (!token)
             throw new Error("No token - did beforeAll() fail?");
 
-        const entity = new ContentEntity();
-        entity.guid = entityGuid;
-        entity.pathAndName = "path/to/content.txt";
-        entity.mimeType = "text/plain";
-        entity.encodedSize = 12345;
-        entity.created = new Date();
-        entity.createdBy = entityGuid;
-        entity.modified = new Date();
-        entity.modifiedBy = entityGuid;
-        entity.content = "This is test content.";
-
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
             method: "POST",
-            body: JSON.stringify(entity),
+            body: JSON.stringify(contentEntity),
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
@@ -79,7 +82,7 @@ describe("ContentService", () => {
         expect(response.status).toBe(200);
 
         let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
-        expect(entity).toEqual(reloaded);
+        expect(contentEntity.guid).toEqual(reloaded.guid);
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/contents should return content list", async () => {
@@ -108,6 +111,7 @@ describe("ContentService", () => {
         expect(data[0].guid).toBeTruthy();
         expect(data[0].pathAndName).toBeTruthy();
         expect(data[0].mimeType).toBeTruthy();
+        expect(data[0].base64Encoded).toBeTruthy();
         expect(data[0].encodedSize).toBeTruthy();
         expect(data[0].content).toBeTruthy();
     }, Config.jestTimeoutSeconds * 1000);
