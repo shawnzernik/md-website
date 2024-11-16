@@ -7,6 +7,9 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
     @PrimaryColumn({ name: "guid" })
     public guid: string = "";
 
+    @Column({ name: "title" })
+    public title: string = "";
+
     @Column({ name: "path_and_name" })
     public pathAndName: string = "";
 
@@ -42,6 +45,7 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
 
     public copyFrom(source: ContentDto): void {
         this.guid = source.guid;
+        this.title = source.title;
         this.pathAndName = source.pathAndName;
         this.mimeType = source.mimeType;
         this.binary = source.binary;
@@ -57,6 +61,7 @@ export class ContentEntity implements ContentDto, CopyInterface<ContentDto> {
 
     public copyTo(dest: ContentDto): void {
         dest.guid = this.guid;
+        dest.title = this.title;
         dest.pathAndName = this.pathAndName;
         dest.mimeType = this.mimeType;
         dest.binary = this.binary;

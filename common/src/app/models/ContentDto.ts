@@ -1,5 +1,6 @@
 export interface ContentDto {
     guid: string;
+    title: string;
     pathAndName: string;
     mimeType: string;
     binary: boolean;

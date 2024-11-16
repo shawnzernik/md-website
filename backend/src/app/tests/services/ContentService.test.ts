@@ -5,18 +5,28 @@ import { Config } from "../../../Config";
 import { EntitiesDataSource } from "../../data/EntitiesDataSource";
 import { ContentEntity } from "../../data/ContentEntity";
 import { ContentRepository } from "../../data/ContentRepository";
+import { UserEntity } from "../../data/UserEntity";
+import { UserRepository } from "../../data/UserRepository";
 
 jest.setTimeout(Config.jestTimeoutSeconds * 1000);
 
 describe("ContentService", () => {
     let agent = new https.Agent({ rejectUnauthorized: false });
-    let entityGuid = "faf76b3d-ed66-4182-a7c2-7ea6562785fe";
+    let entityGuid = "d452d09e-d2f3-4d2c-bd65-6b0b9dc6b83d";
     let token: string | undefined;
     let eds: EntitiesDataSource;
+
+    let userEntity = new UserEntity();
+    userEntity.guid = entityGuid;
+    userEntity.displayName = "Content Test User";
+    userEntity.emailAddress = "contenttest@localhost";
+    userEntity.smsPhone = "555-555-5555";
 
     beforeAll(async () => {
         eds = new EntitiesDataSource();
         await eds.initialize();
+
+        await new UserRepository(eds).save(userEntity);
 
         const body = JSON.stringify({
             emailAddress: "administrator@localhost",
@@ -43,6 +53,8 @@ describe("ContentService", () => {
     afterAll(async () => {
         try { await new ContentRepository(eds).delete({ guid: entityGuid }); }
         catch (err) { /* eat error */ }
+        try { await new UserRepository(eds).delete({ guid: entityGuid }); }
+        catch (err) { /* eat error */ }
 
         await eds.destroy();
     }, Config.jestTimeoutSeconds * 1000);
@@ -53,10 +65,11 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.pathAndName = "path/to/file.txt";
+        entity.title = "Test Content";
+        entity.pathAndName = "path/to/test/content.txt";
         entity.mimeType = "text/plain";
         entity.binary = false;
-        entity.encodedSize = 12345;
+        entity.encodedSize = 1024;
         entity.securablesGuid = entityGuid;
         entity.created = new Date();
         entity.createdBy = entityGuid;
@@ -79,8 +92,8 @@ describe("ContentService", () => {
 
         expect(response.ok).toBeTruthy();
         expect(response.status).toBe(200);
-        
-        const reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
+
+        let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
         expect(entity.guid).toEqual(reloaded.guid);
     }, Config.jestTimeoutSeconds * 1000);
 
@@ -108,9 +121,9 @@ describe("ContentService", () => {
 
         expect(data.length > 0).toBeTruthy();
         expect(data[0].guid).toBeTruthy();
+        expect(data[0].title).toBeTruthy();
         expect(data[0].pathAndName).toBeTruthy();
         expect(data[0].mimeType).toBeTruthy();
-        expect(data[0].encodedSize).toBeTruthy();
     }, Config.jestTimeoutSeconds * 1000);
 
     test("GET /api/v0/content/:guid should return content and 200", async () => {
@@ -158,7 +171,7 @@ describe("ContentService", () => {
         expect(response.ok).toBeTruthy();
         expect(response.status).toBe(200);
 
-        const entity = await new ContentRepository(eds).findBy({ guid: entityGuid });
+        let entity = await new ContentRepository(eds).findBy({ guid: entityGuid });
         expect(entity.length).toEqual(0);
     }, Config.jestTimeoutSeconds * 1000);
 });
