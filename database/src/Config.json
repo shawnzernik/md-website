@@ -32,6 +32,7 @@
         "0.1.0/tables/payloads.sql",
         "0.1.0/data/settings.sql",
         "0.1.0/data/securables.sql",
+        "0.1.0/data/markdowns.sql",
         "0.1.0/data/menus.sql",
         "0.1.0/data/lists.sql",
         "0.1.0/data/administrator.sql"

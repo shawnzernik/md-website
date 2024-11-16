@@ -5,6 +5,7 @@ import { EntitiesDataSource } from "../data/EntitiesDataSource";
 import { PayloadDto } from "common/src/app/models/PayloadDto";
 import { PayloadEntity } from "../data/PayloadEntity";
 import { PayloadRepository } from "../data/PayloadRepository";
+import { ContentRepository } from "../data/ContentRepository";
 
 export class PayloadService extends BaseService {
     protected constructDataSource(): EntitiesDataSource {
@@ -24,11 +25,14 @@ export class PayloadService extends BaseService {
 
     public async getGuid(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<PayloadDto | null> {
         await logger.trace();
-        await BaseService.checkSecurityName(logger, "Payload:Read", req, ds);
 
         const guid = req.params["guid"];
-        const ret = await new PayloadRepository(ds).findOneBy({ guid: guid });
-        return ret;
+
+        const contentsDto = await new ContentRepository(ds).findOneBy({ guid: guid });
+        await BaseService.checkSecurityGuid(logger, contentsDto!.securablesGuid, req, ds);
+
+        const payloadDto = await new PayloadRepository(ds).findOneBy({ guid: guid });
+        return payloadDto;
     }
 
     public async getList(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<PayloadDto[]> {
@@ -45,6 +49,10 @@ export class PayloadService extends BaseService {
 
         const entity = new PayloadEntity();
         entity.copyFrom(req.body as PayloadDto);
+
+        const contentsDto = await new ContentRepository(ds).findOneBy({ guid: entity.guid });
+        await BaseService.checkSecurityGuid(logger, contentsDto!.securablesGuid, req, ds);
+
         await new PayloadRepository(ds).save([entity]);
     }
 

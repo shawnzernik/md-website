@@ -26,15 +26,12 @@ export class ExtendedContentService extends BaseService {
     public async getDecoded(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<MimeTypeResponseDto> {
         await logger.trace();
 
-        // TODO: work out a session cookie auth - JWT > 4K problem
-        // await BaseService.checkSecurityGuid(logger, contentDto.securablesGuid, req, ds);
-        await BaseService.checkSecurityName(logger, "Content:Public", req, ds);
-
         const pathAndName = req.params[0];
         const contentDto = await new ContentRepository(ds).findOneBy({ pathAndName: pathAndName });
         if (!contentDto)
             throw new Error("Could not locate content by path and name: " + pathAndName);
 
+        await BaseService.checkSecurityGuid(logger, contentDto.securablesGuid, req, ds);
 
         const payloadDto = await new PayloadRepository(ds).findOneBy({ guid: contentDto.guid });
         if (!payloadDto)
@@ -49,10 +46,14 @@ export class ExtendedContentService extends BaseService {
     }
     public async getPathAndName(logger: Logger, req: express.Request, ds: EntitiesDataSource): Promise<ContentDto | null> {
         await logger.trace();
-        await BaseService.checkSecurityName(logger, "Content:Read", req, ds);
 
         const pathAndName = req.params[0];
         const ret = await new ContentRepository(ds).findOneBy({ pathAndName: pathAndName });
+        if (!ret)
+            throw new Error("Could not locate file '" + pathAndName + "'!");
+
+        await BaseService.checkSecurityGuid(logger, ret.securablesGuid, req, ds);
+
         return ret;
     }
 }
