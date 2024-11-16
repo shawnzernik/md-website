@@ -2,7 +2,7 @@ export interface ContentDto {
     guid: string;
     pathAndName: string;
     mimeType: string;
-    base64Encoded: boolean;
+    binary: boolean;
     encodedSize: number;
     securablesGuid: string;
     created: Date;

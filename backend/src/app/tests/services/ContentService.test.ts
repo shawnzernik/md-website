@@ -10,7 +10,7 @@ jest.setTimeout(Config.jestTimeoutSeconds * 1000);
 
 describe("ContentService", () => {
     let agent = new https.Agent({ rejectUnauthorized: false });
-    let entityGuid = "abcdef01-2345-6789-abcd-ef0123456789";
+    let entityGuid = "faf76b3d-ed66-4182-a7c2-7ea6562785fe";
     let token: string | undefined;
     let eds: EntitiesDataSource;
 
@@ -53,11 +53,15 @@ describe("ContentService", () => {
 
         const entity = new ContentEntity();
         entity.guid = entityGuid;
-        entity.pathAndName = "example/path.txt";
+        entity.pathAndName = "path/to/file.txt";
         entity.mimeType = "text/plain";
-        entity.base64Encoded = false;
+        entity.binary = false;
         entity.encodedSize = 12345;
-        entity.securablesGuid = entityGuid; // assuming it references the same user
+        entity.securablesGuid = entityGuid;
+        entity.created = new Date();
+        entity.createdBy = entityGuid;
+        entity.modified = new Date();
+        entity.modifiedBy = entityGuid;
 
         const response = await fetch(Config.appUrl + "/api/v0/content", {
             agent: agent,
@@ -75,8 +79,8 @@ describe("ContentService", () => {
 
         expect(response.ok).toBeTruthy();
         expect(response.status).toBe(200);
-
-        let reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
+        
+        const reloaded = await new ContentRepository(eds).findOneByOrFail({ guid: entityGuid });
         expect(entity.guid).toEqual(reloaded.guid);
     }, Config.jestTimeoutSeconds * 1000);
 
@@ -154,7 +158,7 @@ describe("ContentService", () => {
         expect(response.ok).toBeTruthy();
         expect(response.status).toBe(200);
 
-        let entity = await new ContentRepository(eds).findBy({ guid: entityGuid });
+        const entity = await new ContentRepository(eds).findBy({ guid: entityGuid });
         expect(entity.length).toEqual(0);
     }, Config.jestTimeoutSeconds * 1000);
 });

@@ -32,4 +32,5 @@ const app = new WebApp((logger: Logger, app: express.Express) => {
     new PayloadService(logger, app);
     new ExtendedContentService(logger, app);
 });
+
 app.execute();
